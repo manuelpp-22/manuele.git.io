@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para ti </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    html,body {margin:0; padding:0; width:100vw; height:100vh; min-height:100vh; background:#0b0710;}
+    body {font-family:'Quicksand',Arial,sans-serif; min-height:100vh; background:#0b0710;}
+    /* Palabras flotantes */
+    .floating-word {
+      position: fixed; font-family: 'Pacifico', cursive; font-size: 1.3rem; opacity: 0.13; user-select: none;
+      pointer-events:none; z-index:1; animation: floatWords 22s linear infinite; color:#e75480; 
+      text-shadow:1px 1px 8px #fff7, 0 0 2px #e7548020;
+    }
+    @keyframes floatWords {
+      0% { transform: translateY(120vh) scale(1) rotate(-12deg);}
+      100% { transform: translateY(-10vh) scale(1.3) rotate(7deg);}
+    }
+    /* Pantalla Terror */
+    #terror-bg {
+      background:#14101a;
+      width:100vw; height:100vh; position:fixed; z-index:99; top:0; left:0; display:flex; flex-direction:column; align-items:center; justify-content:center; transition: background 1.2s, opacity 1s;
+      opacity:1;
+      overflow:hidden;
+    }
+    .terror-frase {
+      color:#fff;
+      font-size:2.2rem;
+      font-family:'Pacifico',cursive;
+      text-shadow:0 0 18px #e75480cc, 0 0 24px #000c;
+      animation: terrorFadeIn 3s;
+      margin-bottom:32px;
+      text-align:center;
+      letter-spacing:2px;
+      margin-top:-40px;
+    }
+    @keyframes terrorFadeIn { 0%{opacity:0;} 100%{opacity:1;} }
+    .terror-btn {
+      opacity:1;
+      font-size:1.15rem;
+      padding:15px 45px;
+      border-radius:18px;
+      background:linear-gradient(90deg,#e75480 60%,#fbb1c6 100%);
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      font-family:'Pacifico',cursive;
+      box-shadow:0 2px 24px #e7548055,0 1.5px 0 #fff3,0 0 0 4px #fff1 inset;
+      letter-spacing:1px;
+      transition:background 0.3s, box-shadow 0.5s, transform 0.2s;
+      margin-top:10px;
+      margin-bottom:0;
+      outline:none;
+      animation: btnPop 1.2s 1.7s both;
+      display:block;
+    }
+    @keyframes btnPop {0%{transform:scale(0.5);opacity:0;} 80%{transform:scale(1.1);opacity:1;} 100%{transform:scale(1);opacity:1;}}
+    .terror-btn:hover {background:#e75480; box-shadow:0 2px 32px #e7548095;}
+    /* DECISION */
+    #decision-bg {
+      display:none; background:#170c1f;
+      width:100vw; height:100vh; position:fixed; z-index:98; top:0; left:0; flex-direction:column; align-items:center; justify-content:center; opacity:1; transition:opacity 0.8s;
+      overflow:hidden;
+    }
+    .decision-frase {
+      color:#fff; font-size:1.45rem; margin-top:60px; font-family:'Pacifico',cursive; text-shadow:0 0 8px #fff5,0 0 22px #e75480a0; margin-bottom:22px;
+      text-align:center; letter-spacing:1px;
+    }
+    .decision-btns {
+      display:flex; gap:27px; margin-bottom:18px; justify-content:center;
+    }
+    .decision-btn {
+      font-family:'Pacifico',cursive; font-size:1.1rem; padding:13px 35px; border-radius:19px; border:none; cursor:pointer; background:linear-gradient(90deg,#e75480 60%,#fbb1c6 100%); color:#fff; box-shadow:0 1px 9px #e7548030;
+      letter-spacing:1px; transition:background 0.18s,transform 0.09s;
+      outline:none;
+    }
+    .decision-btn:hover {background:#e75480; transform:scale(1.06);}
+    #no-counter-msg {color:#e75480; font-size:1.08rem; margin-bottom:8px; text-align:center;}
+    .decision-pista {
+      color:#fbb1c6; font-size:.99rem; margin-top:8px; text-align:center; text-shadow:0 1px 4px #0008;
+      font-family:'Quicksand',Arial,sans-serif;
+      margin-bottom:16px;
+      letter-spacing:.5px;
+    }
+    .pista-destello {animation: destello 1.2s infinite;}
+    @keyframes destello {0%{color:#fbb1c6;} 50%{color:#fff;} 100%{color:#fbb1c6;}}
+    .hidden-btn {
+      position:fixed; bottom:2.7vh; left:2vw;
+      opacity:0.04;
+      font-size:1.03rem; padding:8px 10px; z-index:103;
+      background:linear-gradient(90deg,#e75480 60%,#fbb1c6 100%);
+      font-family:'Pacifico',cursive; border-radius:50%;
+      pointer-events:auto;
+      border:none;
+      box-shadow:0 1px 10px #fff7,0 0 0 2.5px #fff2 inset;
+      transition:opacity 0.3s, background 0.2s, box-shadow .2s;
+      outline:none;
+      cursor:pointer;
+    }
+    .hidden-btn:hover {opacity:0.22; background:#e75480; box-shadow:0 1px 12px #e7548080;}
+    .level-container { position:fixed; z-index:30; width:100vw; height:100vh; top:0; left:0; background:#f9f7fa; display:none; justify-content:center; align-items:center; flex-direction:column; transition:opacity 0.5s;}
+    .level-container.active {display:flex;}
+    .level-desc { color:#333; text-align:center; max-width:360px; margin-bottom:20px;}
+    .love-bar-container {
+      width: 270px; max-width: 85vw; background: #ffe7f2; border-radius: 14px; box-shadow: 0 1px 9px #e7548025;
+      margin: 19px auto 19px auto; height: 28px; overflow: hidden; border: 1.5px solid #e75480; position: relative; display: flex; align-items: center;
+    }
+    .love-bar {
+      background: linear-gradient(90deg, #e75480 85%, #fbb1c6 100%);
+      height: 100%; width: 0;
+      border-radius: 14px 0 0 14px; transition: width 0.8s cubic-bezier(.65,.1,.25,1.1);
+      position: absolute; left: 0; top: 0; z-index: 1;
+    }
+    .love-bar-text {
+      width: 100%; text-align: center; color: #e75480; font-weight: bold; font-size: 1.07rem; letter-spacing: 1px;
+      position: relative; z-index: 2; text-shadow: 0 1px 5px #fff;
+    }
+    .memory-board {display:grid; grid-template-columns:repeat(4,60px); grid-gap:14px; margin:22px 0;}
+    .memory-card {
+      width:60px; height:60px; background:#fffdfa; border-radius:12px; box-shadow:0 1px 8px #e7548035; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; border:2px solid #e7548015; font-size:2.4rem; position:relative; transition:background 0.18s;
+    }
+    .memory-card.flipped,.memory-card.matched {background:#fff0f6;}
+    .memory-card img {width:50px; height:50px;}
+    .quiz-question {text-align:center; font-size:1.13rem; margin-bottom:16px;}
+    .quiz-options {display:flex; flex-direction:column; gap:11px;}
+    .quiz-btn {
+      font-size:1rem; border:none; border-radius:9px; background:#fffdfa; color:#e75480; box-shadow:0 1px 8px #e7548035;
+      padding:10px 11px; cursor:pointer; transition:background 0.13s;
+    }
+    .quiz-btn.correct {background:#d3efdc; color:#238d4a;}
+    .quiz-btn.wrong {background:#fbeaea; color:#d13b68;}
+    .quiz-progress {font-size:.97rem; color:#a2657a; margin-bottom:7px;}
+    .emoji-row {display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin: 18px 0;}
+    .emoji-btn {
+      font-size:2rem; background:#fffdfa; border:none; border-radius:10px; cursor:pointer; padding:7px 13px; margin:0;
+      box-shadow:0 1px 8px #e7548035; transition:background 0.13s;
+    }
+    .emoji-btn.success {background:#d3efdc;}
+    .emoji-btn.fail {background:#fbeaea;}
+    .reinicio-msg {
+      color:#e75480;
+      font-size:1.1rem;
+      text-align:center;
+      margin-top:18px;
+      animation:reinicioFade 0.7s;
+      font-family:'Pacifico',cursive;
+    }
+    @keyframes reinicioFade {0%{opacity:0;transform:scale(.8);}100%{opacity:1;transform:scale(1);}}
+    .paper-container { width:100vw; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; z-index:10; position:relative; margin-bottom:60px;}
+    .paper {
+      margin:40px 0 80px 0; background:#fffdfa; box-shadow:0 8px 48px #e7548035,0 1.5px 0 #e7548057; border-radius:22px 22px 32px 32px;
+      max-width:480px; width:95vw; min-height:70vh; padding:44px 28px 44px 28px; font-size:1.13rem; color:#34303a; line-height:1.65; border:1.3px solid #f3c2d8;
+      position:relative; opacity:0; transform:translateY(-80px) scaleY(0.92); pointer-events:none; transition:opacity 0.8s,transform 0.8s; overflow:hidden; visibility:hidden;
+    }
+    .show-paper .paper { opacity:1; transform:translateY(0) scaleY(1); pointer-events:auto; visibility:visible; animation:openPaper 1.2s cubic-bezier(.65,.1,.25,1.1);}
+    @keyframes openPaper {0%{opacity:0;transform:translateY(-80px) scaleY(0.92);} 65%{opacity:1;transform:translateY(7px) scaleY(1.04);} 85%{transform:translateY(-4px) scaleY(0.98);} 100%{opacity:1;transform:translateY(0) scaleY(1);}
+    }
+    .paper-title {font-family:'Pacifico',cursive; color:#e75480; font-size:2.1rem; text-align:center; margin-bottom:18px; margin-top:0;}
+    .paper-content {font-family:'Quicksand',Arial,sans-serif; white-space:pre-line;}
+    .music-btn {
+      position:fixed; top:18px; right:18px; background:#fff; border:1.5px solid #e75480; color:#e75480; font-size:1.15rem; border-radius:50px;
+      padding:7px 13px; z-index:99; cursor:pointer; box-shadow:0 2px 12px #e7548035; transition:background 0.13s; opacity:0.8; display:none;
+    }
+    .show-paper .music-btn {display:block;}
+    @media (max-width:600px){
+      .paper{font-size:1.01rem;padding:27px 5vw 30px 5vw;}
+      .paper-title{font-size:1.3rem;}
+      .memory-board{grid-template-columns:repeat(4,44px);}
+      .memory-card{width:44px; height:44px;}
+      .terror-frase{font-size:1.1rem;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Palabras flotantes -->
+  <script>
+    const floatingWords = [
+      "Osita", "Spider", "Mi vida", "Preciosa", "Mi chiquita", "Mi sol", "Mi universo",
+      "Mi Spiderman", "Mi Kitty", "Mi cielo", "Bebé", "Te amo", "Mi todo", "Mi razón", "Mi amorcito",
+      "Guapísima", "Mi ternura", "Mi héroe", "Mi niña", "Mi persona favorita",
+      "Mi risa", "Mi paz", "Mi mundo", "Mi compañera", "Mi suerte", "Mi fortuna",
+      "Siempre tú", "Siempre juntos", "Para siempre", "Contigo hasta el fin", "Mi lugar seguro",
+      "Mi mejor regalo", "Mi alegría", "Te extraño", "Mi corazón", "Mi destino"
+    ];
+    function random(min,max){return Math.random()*(max-min)+min;}
+    for(let i=0;i<23;i++){
+      const w=document.createElement("div");
+      w.className="floating-word";
+      w.innerText=floatingWords[Math.floor(Math.random()*floatingWords.length)];
+      w.style.left=random(2,89)+"vw";
+      w.style.fontSize=random(0.96,2.21)+"rem";
+      w.style.animationDuration=random(15,27)+"s";
+      w.style.animationDelay=(-1*random(0,22))+"s";
+      document.body.appendChild(w);
+    }
+  </script>
+
+  <!-- PANTALLA TERROR -->
+  <div id="terror-bg">
+    <div class="terror-frase" id="terror-frase">Tengo algo que decirte...</div>
+    <button class="terror-btn" id="terror-btn">Continuar</button>
+    <audio id="terror-music" src="C:\Users\Pincay\Desktop\para mi novia\suspenso.mp3" loop></audio>
+  </div>
+
+  <!-- DECISION PANTALLA -->
+  <div id="decision-bg">
+    <div class="decision-frase">¿Seguro que quieres saber lo que tengo para ti?</div>
+    <div class="decision-btns">
+      <button class="decision-btn" id="btn-si">Sí</button>
+      <button class="decision-btn" id="btn-no">No</button>
+    </div>
+    <div id="no-counter-msg"></div>
+    <div class="decision-pista pista-destello">Pista: Quizá tu ❤️ está abajo a la izquierda...</div>
+    <button class="hidden-btn" id="btn-si-hidden" title="¿Descubriste el secreto?">💖</button>
+    <audio id="decision-music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9c1b36.mp3" loop></audio>
+  </div>
+
+  <!-- NIVELES JUEGOS -->
+  <audio id="juego-music" src="C:\Users\Pincay\Desktop\para mi novia\tacos.mp3" loop></audio>
+  <div class="level-container" id="level1">
+    <div class="love-bar-container">
+      <div class="love-bar" id="love-bar"></div>
+      <div class="love-bar-text" id="love-bar-text">Nivel de amor: 33%</div>
+    </div>
+    <div class="level-desc" id="level-desc-1"></div>
+    <div class="memory-board" id="memory-board"></div>
+    <div id="reinicio-msg1"></div>
+  </div>
+  <div class="level-container" id="level2">
+    <div class="love-bar-container">
+      <div class="love-bar" id="love-bar2"></div>
+      <div class="love-bar-text" id="love-bar-text2">Nivel de amor: 66%</div>
+    </div>
+    <div class="level-desc" id="level-desc-2"></div>
+    <div class="quiz-progress" id="quiz-progress"></div>
+    <div class="quiz-question" id="quiz-question"></div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div id="reinicio-msg2"></div>
+  </div>
+  <div class="level-container" id="level3">
+    <div class="love-bar-container">
+      <div class="love-bar" id="love-bar3"></div>
+      <div class="love-bar-text" id="love-bar-text3">¡Nivel de amor al máximo! 100%</div>
+    </div>
+    <div class="level-desc" id="level-desc-3"></div>
+    <div class="emoji-row" id="emoji-row"></div>
+    <div id="reinicio-msg3"></div>
+  </div>
+
+  <!-- Música romántica final (carta) -->
+  <audio id="bgmusic" src="C:\Users\Pincay\Desktop\para mi novia\Arctic-Monkeys-I-Wanna-Be-Yours-(RawPraise.ng).mp3" loop></audio>
+  <button class="music-btn" onclick="toggleMusic()" id="musicbtn">⏸️ Pausar música</button>
+
+  <!-- Carta animada -->
+  <div class="paper-container">
+    <div class="paper" id="paper">
+      <div class="paper-title">Para ti, mi amor 💌</div>
+      <div class="paper-content">
+Querida vida mía,
+
+Hoy quería regalarte algo que no se puede envolver, pero sí sentir: una carta muy muy larga, hecha con todo lo que soy y con cada latido que provocas en mí.
+
+Desde que llegaste a mi mundo, todo cambió de color. La vida se volvió más ligera, más dulce, más tú. Eres mi razón para sonreír en los días grises, mi abrazo favorito en las noches frías, y la persona con la que quiero compartir cada pequeña locura y cada gran sueño.
+
+Me enamoro de ti cada día, en cada detalle: en tu risa, en tu mirada, en tus ocurrencias, en tu forma de decirme “te amo”, en los silencios bonitos cuando no hace falta decir nada. Eres mi persona preferida, mi buena suerte y mi superheroína.
+
+Gracias por permitirme ser quien soy contigo, por tu paciencia, por tus abrazos infinitos, por tus mensajes de buenos días, por tus mensajes de buenas noches, por ser la mejor compañera de vida. Gracias por enseñarme que el amor no es solo palabras, sino acciones diarias, detalles, cuidado y ternura.
+
+Quiero que sepas que no importa cuántos años pasen, cuántas estaciones cambien, siempre voy a elegirte. Siempre voy a estar para ti: para reír, para llorar, para soñar, para luchar, para crecer. Me haces sentir la persona más afortunada del universo.
+
+Eres mi te amo 3 millones en un mundo sin iron-man, mi ternura y mi valentía, mi calma y mi emoción. Gracias por cruzarte en mi camino y mostrarme que el amor verdadero existe.
+
+Si alguna vez dudas, lee esta carta y recuerda: eres mi todo, mi mejor historia, mi para siempre. Nunca olvides lo especial que eres, lo mucho que vales, lo hermosa que eres por dentro y por fuera.
+
+Te amo más de lo que las palabras pueden decir. Y si la vida fuera una canción, la nuestra sería la que jamás dejaría de sonar.
+
+Siempre tuyo,
+Tu Alejo
+      </div>
+    </div>
+  </div>
+  <script>
+    // 1. TERROR PANTALLA
+    const terrorBtn = document.getElementById("terror-btn");
+    const terrorMusic = document.getElementById("terror-music");
+    document.addEventListener("DOMContentLoaded", ()=>{
+      terrorMusic.volume=0.55;
+      terrorMusic.play().catch(()=>{});
+    });
+    terrorBtn.onclick = ()=>{
+      terrorMusic.pause();
+      document.getElementById("terror-bg").style.opacity = 0;
+      setTimeout(()=>{
+        document.getElementById("terror-bg").style.display="none";
+        showDecision();
+      }, 900);
+    };
+
+    // 2. DECISION PANTALLA
+    let noCount = 0;
+    function showDecision(){
+      const decBg = document.getElementById("decision-bg");
+      const decisionMusic = document.getElementById("decision-music");
+      decBg.style.display="flex";
+      decisionMusic.volume=0.5;
+      decisionMusic.currentTime=0; decisionMusic.play();
+      // Botón SÍ (falso)
+      document.getElementById("btn-si").onclick = ()=>{
+        document.getElementById("btn-si").style.transform="translateY(2.5px) scale(0.97)";
+        setTimeout(()=>{document.getElementById("btn-si").style.transform="";},180);
+      };
+      // Botón NO
+      document.getElementById("btn-no").onclick = ()=>{
+        noCount++;
+        let msg = "";
+        if(noCount === 1) msg = "¿No quieres saber lo que siento? 😢";
+        if(noCount === 2) msg = "¿Segura que no? Piénsalo bien...";
+        if(noCount >= 3) {
+          msg = "¿Ese es todo tu amor por mí? 😭";
+          setTimeout(()=>{noCount=0; document.getElementById("no-counter-msg").innerText="";},1500);
+        }
+        document.getElementById("no-counter-msg").innerText = msg;
+      };
+      // Botón SÍ oculto
+      document.getElementById("btn-si-hidden").onclick = ()=>{
+        decisionMusic.pause();
+        decBg.style.opacity=0;
+        setTimeout(()=>{
+          decBg.style.display="none";
+          startJuegos();
+        }, 800);
+      }
+    }
+
+    // 3. JUEGOS / NIVELES
+    const loveLevelMessages = [
+      {desc: "Amor, antes de abrir tu carta tienes que demostrar tu memoria de osita linda  🧸💕", percent: 33, text: "Nivel de amor: 33%"},
+      {desc: "¡Increíble! Ahora veamos si recuerdas detalles de nosotros…", percent: 66, text: "Nivel de amor: 66%"},
+      {desc: "Ya casi, mi vida, solo una pruebita más y la carta será tuya 🥰", percent: 100, text: "¡Nivel de amor al máximo! 100%"}
+    ];
+    let lovePercent = 100;
+    let failCounter = 0;
+    let currentLevel = 1;
+
+    function resetLoveBar() {
+      lovePercent = 100;
+      updateLoveBar(currentLevel, true); // true for instant
+    }
+    function updateLoveBar(level, instant=false) {
+      let percent = lovePercent;
+      if(level===1) {
+        document.getElementById('love-bar').style.width = percent + '%';
+        document.getElementById('love-bar-text').innerText = loveLevelMessages[0].text.replace(/\d+/,Math.round(percent));
+        document.getElementById('level-desc-1').innerText = loveLevelMessages[0].desc;
+      }
+      if(level===2) {
+        document.getElementById('love-bar2').style.width = percent + '%';
+        document.getElementById('love-bar-text2').innerText = loveLevelMessages[1].text.replace(/\d+/,Math.round(percent));
+        document.getElementById('level-desc-2').innerText = loveLevelMessages[1].desc;
+      }
+      if(level===3) {
+        document.getElementById('love-bar3').style.width = percent + '%';
+        document.getElementById('love-bar-text3').innerText = loveLevelMessages[2].text.replace(/\d+/,Math.round(percent));
+        document.getElementById('level-desc-3').innerText = loveLevelMessages[2].desc;
+      }
+    }
+    // Música por todos los juegos
+    function playLevelMusic(n){
+      document.getElementById('bgmusic').pause();
+      let juegoMusic = document.getElementById("juego-music");
+      if(n<=3){
+        juegoMusic.currentTime=0; juegoMusic.volume=0.5; juegoMusic.play();
+      } else if(n===4){
+        juegoMusic.pause();
+        let m=document.getElementById("bgmusic");
+        if(m){ m.currentTime=0; m.volume=0.55; m.play(); }
+      }
+    }
+    function startJuegos(){
+      failCounter = 0;
+      lovePercent = 100;
+      currentLevel = 1;
+      nextLevel(1);
+      playLevelMusic(1);
+    }
+
+    // NIVEL 1: MEMORIA
+    const images = [
+      {emoji: "😺", name: "kitty"}, // Hello Kitty emoji
+      {img: "spiderman.jpg", name: "spiderman"},
+      {emoji: "💖", name: "corazon"},
+      {img: "https://pngimg.com/d/hello_kitty_PNG49.png", name: "kitty2"},
+    ];
+    function shuffleCards() {
+      return [...images, ...images]
+        .map(card => ({...card, id: Math.random()}))
+        .sort(()=>Math.random()-0.5);
+    }
+    let cards, firstCard, lockBoard, matched, board;
+
+    function renderLevel1() {
+      cards = shuffleCards();
+      firstCard = null; lockBoard = false; matched = 0;
+      board = document.getElementById('memory-board');
+      board.innerHTML = "";
+      document.getElementById('reinicio-msg1').innerHTML = '';
+      for(let i=0;i<cards.length;i++) {
+        const card = cards[i];
+        const div = document.createElement('div');
+        div.className = "memory-card";
+        div.dataset.name = card.name;
+        div.dataset.idx = i;
+        div.innerHTML = `<span style="opacity:0;">?</span>`;
+        div.onclick = function(){
+          if(lockBoard || div.classList.contains('flipped') || div.classList.contains('matched')) return;
+          div.classList.add('flipped');
+          if(card.img){
+            div.innerHTML = `<img src="${card.img}" alt="">`;
+          }else{
+            div.innerHTML = `<span>${card.emoji}</span>`;
+          }
+          if(!firstCard){
+            firstCard = div;
+          }else{
+            if(firstCard.dataset.name === div.dataset.name){
+              firstCard.classList.add('matched');
+              div.classList.add('matched');
+              matched++;
+              if(matched===cards.length/2){
+                setTimeout(()=>nextLevel(2), 900);
+              }
+              firstCard = null;
+            }else{
+              lockBoard = true;
+              failCounter++;
+              lovePercent = Math.max(10, lovePercent - 22);
+              updateLoveBar(1);
+              setTimeout(()=>{
+                firstCard.classList.remove('flipped');
+                div.classList.remove('flipped');
+                firstCard.innerHTML = `<span style="opacity:0;">?</span>`;
+                div.innerHTML = `<span style="opacity:0;">?</span>`;
+                firstCard = null;
+                lockBoard = false;
+                if(failCounter>=4){
+                  reiniciarTodo("¡Ups! Te equivocaste 3 veces. Vuelve a empezar y demuestra tu amor 💔",1);
+                }
+              }, 690);
+            }
+          }
+        };
+        board.appendChild(div);
+      }
+      updateLoveBar(1,true);
+    }
+
+    // NIVEL 2: QUIZ
+    const quiz = [
+      {
+        q: "¿Cómo me sueles llamar de cariño?",
+        options: ["Osita", "mi niña", "Capitana", "Bebé", "Mi Princesa"],
+        answer: 1
+      },
+      {
+        q: "¿Cuál es nuestro dúo favorito?",
+        options: ["Hello Kitty y Spiderman", "Batman y Robin", "Mario y Luigi", "Mickey y Minnie"],
+        answer: 0
+      },
+      {
+        q: "¿Qué canción es especial para nosotros?",
+        options: ["I Wanna Be Yours", "Perfect", "Viva la Vida", "Shallow"],
+        answer: 0
+      }
+    ];
+    let quizIdx, quizScore, quizQ, quizO, quizP;
+    function renderQuiz() {
+      quizIdx=quizIdx||0; quizScore=quizScore||0;
+      quizQ = document.getElementById('quiz-question');
+      quizO = document.getElementById('quiz-options');
+      quizP = document.getElementById('quiz-progress');
+      quizP.innerText = `Pregunta ${quizIdx+1} de ${quiz.length}`;
+      quizQ.innerText = quiz[quizIdx].q;
+      quizO.innerHTML = "";
+      document.getElementById('reinicio-msg2').innerHTML = "";
+      quiz[quizIdx].options.forEach((op,i)=>{
+        const btn = document.createElement('button');
+        btn.className = "quiz-btn";
+        btn.innerText = op;
+        btn.onclick = function(){
+          if(i===quiz[quizIdx].answer){
+            btn.classList.add("correct");
+            quizScore++;
+          } else {
+            btn.classList.add("wrong");
+            failCounter++;
+            lovePercent = Math.max(10, lovePercent - 22);
+            updateLoveBar(2);
+          }
+          Array.from(quizO.children).forEach(b=>b.disabled=true);
+          setTimeout(()=>{
+            if(failCounter>=3){
+              reiniciarTodo("¡Ay! Te equivocaste 3 veces. ¡Empezamos de nuevo! 😅",2);
+              return;
+            }
+            quizIdx++;
+            if(quizIdx<quiz.length) renderQuiz();
+            else setTimeout(()=>nextLevel(3), 650);
+          }, 680);
+        };
+        quizO.appendChild(btn);
+      });
+      updateLoveBar(2,true);
+    }
+
+    // NIVEL 3: ENCUENTRA EL EMOJI CORRECTO
+    function renderEmojiLevel() {
+      const row = document.getElementById("emoji-row");
+      row.innerHTML = "";
+      document.getElementById('reinicio-msg3').innerHTML = "";
+      let emojis = ["🦄","🐻","🕸️","🐱","🐰","💖","🦊","🍓"];
+      emojis = emojis.sort(()=>Math.random()-0.5);
+      emojis.forEach(e=>{
+        const btn = document.createElement('button');
+        btn.className = "emoji-btn";
+        btn.innerText = e;
+        btn.onclick = function(){
+          if(e === "🕸️"){
+            btn.classList.add("success");
+            setTimeout(()=>unlockLetter(), 800);
+          } else {
+            btn.classList.add("fail");
+            failCounter++;
+            lovePercent = Math.max(10, lovePercent - 22);
+            updateLoveBar(3);
+            setTimeout(()=>btn.classList.remove("fail"), 600);
+            if(failCounter>=3){
+              setTimeout(()=>reiniciarTodo("¡Oh! Fallaste 3 veces... vuelve a probar tu amor 🥲",3), 650);
+            }
+          }
+        };
+        row.appendChild(btn);
+      });
+      updateLoveBar(3,true);
+    }
+
+    // CONTROL DE NIVELES Y TRANSICIONES
+    function nextLevel(n) {
+      for(let i=1;i<=3;i++) {
+        let cont = document.getElementById('level'+i);
+        cont.classList.remove("active");
+      }
+      failCounter = 0;
+      lovePercent = 100;
+      currentLevel = n;
+      if(n===1) {
+        let cont = document.getElementById('level1');
+        cont.classList.add("active");
+        updateLoveBar(1,true);
+        renderLevel1();
+        playLevelMusic(1);
+      }
+      if(n===2) {
+        let cont = document.getElementById('level2');
+        cont.classList.add("active");
+        quizIdx=0;quizScore=0;
+        updateLoveBar(2,true);
+        renderQuiz();
+        playLevelMusic(2);
+      }
+      if(n===3) {
+        let cont = document.getElementById('level3');
+        cont.classList.add("active");
+        updateLoveBar(3,true);
+        renderEmojiLevel();
+        playLevelMusic(3);
+      }
+    }
+    function reiniciarTodo(msg, lvl) {
+      setTimeout(()=>{
+        for(let i=1;i<=3;i++) document.getElementById('level'+i).classList.remove("active");
+        setTimeout(()=>{
+          nextLevel(1);
+          document.getElementById('reinicio-msg'+lvl).innerHTML = `<div class="reinicio-msg">${msg}</div>`;
+        },400);
+      },450);
+    }
+    function unlockLetter() {
+      for(let i=1;i<=3;i++) document.getElementById('level'+i).classList.remove("active");
+      setTimeout(()=>{
+        document.body.classList.add('show-paper');
+        playLevelMusic(4);
+        window.scrollTo(0,0);
+      }, 800);
+    }
+
+    // Música romántica (final)
+    const audio = document.getElementById('bgmusic');
+    const musicbtn = document.getElementById('musicbtn');
+    function toggleMusic() {
+      if(audio.paused) {
+        audio.play();
+        musicbtn.innerText = "⏸️ Pausar música";
+      } else {
+        audio.pause();
+        musicbtn.innerText = "▶️ Reproducir música";
+      }
+    }
+    document.addEventListener('click', function firstPlay(){
+      if(document.body.classList.contains('show-paper')) audio.play();
+      document.removeEventListener('click', firstPlay);
+    });
+  </script>
+</body>
+</html>
